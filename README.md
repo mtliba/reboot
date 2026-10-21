@@ -131,7 +131,7 @@ Reference SOC is used **only to measure** these quantities. No pretraining stage
 ```bash
 git clone https://github.com/mtliba/reboot.git && cd reboot
 uv venv && uv pip install -e ".[dev]"     # or: pip install -e ".[dev]"
-pytest -q                                  # 60 s, no GPU, no data needed
+pytest -q                                  # CPU-only, no data needed
 ```
 
 Requires Python ≥ 3.10, PyTorch ≥ 2.1, PyTorch Lightning ≥ 2.1, Hydra.

@@ -19,7 +19,7 @@ the published recipe** — the overrides below are only what differs from them.
 
 ```bash
 uv venv && uv pip install -e ".[dev]"      # Python ≥ 3.10, PyTorch ≥ 2.1, Lightning ≥ 2.1
-pytest -q                                   # ~60 s, CPU-only, needs no data
+pytest -q                                   # CPU-only, needs no data
 ```
 
 `pytest` runs one test per loss against the verification blocks in the specification, plus the

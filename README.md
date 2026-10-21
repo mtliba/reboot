@@ -190,7 +190,7 @@ unpublished manuscript; this entry will be updated if and when it appears.
             Kerkouri, Mohamed Amine and Zitouni, Marwa and Aburaed, Nour and
             Beghdadi, Azeddine and Chetouani, Aladine and Mesbahi, Tedjani},
   year   = {2026},
-  note   = {Manuscript submitted to IEEE ICASSP 2026}
+  note   = {Manuscript submitted to IEEE ICASSP 2027}
 }
 ```
 

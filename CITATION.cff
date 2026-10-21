@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use this code, please cite the paper below."
+message: "If you use this code, please cite the manuscript below. It is under review and has not been accepted or published."
 title: "ReBoot: Physics-Structured Self-Supervised Pretraining for Label-Efficient Battery State-of-Charge Estimation"
 type: software
 license: MIT
@@ -25,10 +25,10 @@ authors:
   - family-names: Mesbahi
     given-names: Tedjani
 preferred-citation:
-  type: conference-paper
+  type: unpublished
   title: "Physics-Structured Self-Supervised Pretraining for Label-Efficient Battery State-of-Charge Estimation"
-  collection-title: "IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)"
   year: 2026
+  notes: "Manuscript submitted to IEEE ICASSP 2026; under review, not accepted or published."
   authors:
     - family-names: Tliba
       given-names: Marouane

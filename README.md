@@ -179,15 +179,18 @@ all tests run without it.
 
 ## Citation
 
+**This paper is under review and has not been accepted or published.** Please cite it as an
+unpublished manuscript; this entry will be updated if and when it appears.
+
 ```bibtex
-@inproceedings{tliba2026reboot,
-  title     = {Physics-Structured Self-Supervised Pretraining for
-               Label-Efficient Battery State-of-Charge Estimation},
-  author    = {Tliba, Marouane and Arbaoui, Slimane and Taifour, Youssra and
-               Kerkouri, Mohamed Amine and Zitouni, Marwa and Aburaed, Nour and
-               Beghdadi, Azeddine and Chetouani, Aladine and Mesbahi, Tedjani},
-  booktitle = {IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)},
-  year      = {2026}
+@unpublished{tliba2026reboot,
+  title  = {Physics-Structured Self-Supervised Pretraining for
+            Label-Efficient Battery State-of-Charge Estimation},
+  author = {Tliba, Marouane and Arbaoui, Slimane and Taifour, Youssra and
+            Kerkouri, Mohamed Amine and Zitouni, Marwa and Aburaed, Nour and
+            Beghdadi, Azeddine and Chetouani, Aladine and Mesbahi, Tedjani},
+  year   = {2026},
+  note   = {Manuscript submitted to IEEE ICASSP 2026}
 }
 ```
 

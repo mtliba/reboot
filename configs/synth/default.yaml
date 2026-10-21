@@ -1,0 +1,8 @@
+# Synthetic dataset generation knobs. Used only by scripts/generate_synthetic_data.py.
+n_batteries: 6
+n_cycles: 4
+perturb_scale: 0.15        # per-battery parameter variation (15% std)
+dt_seconds: 1.0
+charge_C: 1.0              # 1.0 = full capacity per hour
+discharge_C: 1.0
+rest_seconds: 300.0

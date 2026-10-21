@@ -1,0 +1,8 @@
+# SSL-MAE baseline: ReBoot pretrain with only L_mask, then finetune as usual.
+# Just toggles the other SSL losses off; everything else inherits from pretrain/default.
+losses:
+  use_mask: true
+  use_ord: false
+  use_refl: false
+  use_smooth: false
+  use_orth: false

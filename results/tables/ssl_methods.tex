@@ -1,0 +1,16 @@
+\begin{table}[t]
+\centering
+\caption{Self-supervised methods on the same hybrid encoder, finetuned identically (test MAE, \% SOC, per-cell random split). 100-epoch pretrains unless stated.}
+\label{tab:ssl}
+\begin{tabular}{lrr}
+\toprule
+Pretraining & 100\% labels & 1\% labels \\
+\midrule
+No pretraining (supervised hybrid) & 0.349 & 1.084 \\
+Masked reconstruction only (MAE) & 0.425 & 0.864 \\
+SimCLR (augment-pair InfoNCE) & 0.424 & 0.922 \\
+ReBoot (100 ep.) & 0.438 & 0.781 \\
+ReBoot v4 (200 ep.) & 0.434 & 0.773 \\
+\bottomrule
+\end{tabular}
+\end{table}

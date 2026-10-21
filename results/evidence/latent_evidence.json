@@ -1,0 +1,48 @@
+{
+ "maeonly100.npz": {
+  "label": "masked recon. only",
+  "retrieval_mean_gap": 0.19854124736553058,
+  "retrieval_within_0p05": 0.20766666666666667,
+  "r2_soc_from_z_s": 0.9627945819954169,
+  "r2_soc_from_z_d": 0.9402028462149885
+ },
+ "v2_random.npz": {
+  "label": "shuffled batches",
+  "retrieval_mean_gap": 0.28906930823624133,
+  "retrieval_within_0p05": 0.11883333333333333,
+  "r2_soc_from_z_s": 0.8939149933952834,
+  "r2_soc_from_z_d": 0.9673476655666643
+ },
+ "v3_cycle.npz": {
+  "label": "position pairing",
+  "retrieval_mean_gap": 0.22625541615951805,
+  "retrieval_within_0p05": 0.12266666666666666,
+  "r2_soc_from_z_s": 0.7685489963301763,
+  "r2_soc_from_z_d": 0.9633190626152354
+ },
+ "v4_socproxy.npz": {
+  "label": "Coulomb pairing + neg. mask",
+  "retrieval_mean_gap": 0.015614923305343836,
+  "retrieval_within_0p05": 0.9678333333333333,
+  "r2_soc_from_z_s": 0.9833173313567284,
+  "r2_soc_from_z_d": 0.9194585016919177
+ },
+ "physics": {
+  "eta_final": 0.94484,
+  "Q_over_nominal_median_100pct": 0.8829521536827087
+ },
+ "scaling": {
+  "pool_1pct": {
+   "10": 0.8991211652755737,
+   "25": 0.8203203789889812,
+   "50": 0.7936903275549412,
+   "100": 0.7813219912350178
+  },
+  "pool_100pct": {
+   "10": 0.45161652378737926,
+   "25": 0.44117365032434464,
+   "50": 0.436975434422493,
+   "100": 0.43756719678640366
+  }
+ }
+}

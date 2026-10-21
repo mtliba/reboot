@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ page.title }} · ReBoot</title>
+<meta name="description" content="{{ page.description | default: site.description }}">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔋</text></svg>">
+<link rel="stylesheet" href="{{ '/static/style.css' | relative_url }}">
+<style>
+  .pagehead{padding:40px 0 22px;border-bottom:1px solid var(--rule);margin-bottom:34px}
+  .pagehead h1{font-size:clamp(25px,4vw,34px);text-align:left;margin:0 0 10px}
+  .nav{display:flex;flex-wrap:wrap;gap:8px}
+  .nav a{font-size:13.5px;border:1px solid var(--rule);background:var(--card);
+         color:var(--fg);border-radius:7px;padding:5px 12px}
+  .nav a:hover{border-color:var(--accent);text-decoration:none}
+  .doc h1:first-of-type{display:none}
+  .doc img{max-width:100%;height:auto;border:1px solid var(--rule);border-radius:8px;background:#fff;margin:18px 0}
+  .doc table{margin:18px 0}
+  .doc blockquote{border-left:3px solid var(--accent);background:var(--card);margin:22px 0;
+    padding:12px 18px;border-radius:0 8px 8px 0;color:var(--fg)}
+  .doc blockquote p:last-child{margin-bottom:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="pagehead">
+    <h1>{{ page.title }}</h1>
+    <nav class="nav">
+      <a href="{{ '/' | relative_url }}">← Project page</a>
+      <a href="{{ '/EVIDENCE.html' | relative_url }}">Supporting evidence</a>
+      <a href="{{ '/RESULTS.html' | relative_url }}">All results</a>
+      <a href="{{ '/REPRODUCE.html' | relative_url }}">Reproduce</a>
+      <a href="https://github.com/mtliba/reboot">Code</a>
+    </nav>
+  </div>
+  <main class="doc">
+  {{ content }}
+  </main>
+  <footer>Code released under the MIT License ·
+    <a href="https://github.com/mtliba/reboot">github.com/mtliba/reboot</a></footer>
+</div>
+</body>
+</html>

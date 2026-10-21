@@ -1,0 +1,9 @@
+# Li et al. 2026 (Sensors): Conv1d(64) -> Bi-LSTM(64) -> Bahdanau attention -> FC.
+encoder_type: li_cnnbilstm
+in_channels: ???
+hidden: 64
+encoder_kwargs:
+  filters: 64
+  kernel_size: 3
+  hidden: 64
+  fc: 64

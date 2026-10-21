@@ -1,0 +1,42 @@
+# Hydra multirun ablation matrix — covers the 7 rows of TESTING_PLAN.txt §L7.
+#
+# Usage (one command, runs 7 jobs sequentially):
+#
+#   python scripts/pretrain.py --multirun \
+#       hydra/sweeper=basic +sweep=ablation \
+#       pretrain.losses.use_ord=true,false \
+#       pretrain.losses.use_refl=true,false \
+#       pretrain.losses.use_mask=true,false \
+#       pretrain.losses.use_orth=true,false \
+#       model.single_latent=false,true
+#
+# For a more controlled sweep that produces exactly the 7 named rows, use the
+# `sweep_runs` list below from a small shell wrapper (see scripts/run_ablation.sh).
+
+sweep_runs:
+  - name: full
+    overrides: []
+
+  - name: no_ord
+    overrides:
+      - pretrain.losses.use_ord=false
+
+  - name: no_refl
+    overrides:
+      - pretrain.losses.use_refl=false
+
+  - name: no_mask
+    overrides:
+      - pretrain.losses.use_mask=false
+
+  - name: no_orth
+    overrides:
+      - pretrain.losses.use_orth=false
+
+  - name: no_phys
+    overrides:
+      - finetune.losses.use_phys=false
+
+  - name: single_latent
+    overrides:
+      - model.single_latent=true

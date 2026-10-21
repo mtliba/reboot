@@ -1,0 +1,7 @@
+# Chemali et al. 2018 (J. Power Sources 400): 7-layer DNN on [V_t, T_t, mean I, mean V].
+encoder_type: chemali_dnn
+in_channels: ???
+hidden: 32
+encoder_kwargs:
+  hidden: 32
+  n_hidden_layers: 5

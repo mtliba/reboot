@@ -1,0 +1,53 @@
+# Stage 1 pretrain — see CLAUDE.md §6, §8.1.
+batch_size: 256
+lr: 1.0e-3
+weight_decay: 1.0e-4
+warmup_epochs: 10
+
+# Loss hyperparams
+margin: 0.5                   # L_ord hinge margin
+tau: 0.1                      # L_refl temperature
+K_pairs: 8                    # number of ordinal pairs sampled per segment per batch
+
+# Loss weights
+loss_weights:
+  mask: 1.0
+  ord: 1.0
+  refl: 0.5
+  smooth: 0.1
+  orth: 0.01
+
+# Ablation toggles (set false to zero that loss component)
+losses:
+  use_mask: true
+  use_ord: true
+  use_refl: true
+  use_smooth: true
+  use_orth: true
+
+# L_refl: exclude in-batch negatives whose pseudo-SOC is within this distance of
+# the anchor's (label-free). 0 = plain InfoNCE. Pairing itself is chosen by
+# data.pair_strategy (boundary_symmetric | soc_proxy); on the real cells
+# boundary_symmetric pairs windows ~0.28 SOC apart, soc_proxy ~0.009.
+refl_neg_mask_eps: 0.05          # published recipe; 0.0 reproduces the v2/v3 runs
+
+# Batch composition: random (plain shuffle) | cycle (whole cycles per batch, so
+# L_refl gets hundreds of same-cycle charge<->discharge pairs instead of ~28).
+batch_sampler: cycle             # published recipe; `random` reproduces the v2 runs
+# For cross_battery / cross_temperature protocols, drop held-out cells from the
+# unlabeled pretrain pool too (rigorous, non-transductive).
+exclude_holdout: true
+
+# Unlabeled-data scaling: fraction of pretraining cycles used (1.0 = all).
+pool_fraction: 1.0
+
+# Gradient-spike guard (PretrainModule.on_before_optimizer_step): skip the
+# optimizer step when the all-reduced grad norm is non-finite or exceeds
+# grad_spike_factor x its EMA (after grad_spike_warmup_steps). 0 disables.
+grad_spike_factor: 10.0
+grad_spike_warmup_steps: 200
+
+# Masking strategy
+mask:
+  time_ratio: 0.15
+  channel_prob: 0.10

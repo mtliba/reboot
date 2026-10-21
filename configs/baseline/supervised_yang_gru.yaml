@@ -1,0 +1,8 @@
+# Yang et al. 2019 (Energy 175), released code: GRU(1000) -> Dense(50, ReLU) -> Dense(1), on [V, I, T].
+encoder_type: yang_gru
+in_channels: ???
+hidden: 1000
+encoder_kwargs:
+  hidden: 1000
+  num_layers: 1
+  dense: 50

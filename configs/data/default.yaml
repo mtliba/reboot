@@ -1,0 +1,50 @@
+# Data pipeline defaults — see CLAUDE.md §4.
+raw_dir: data/raw
+processed_dir: data/processed
+
+# Channel layout
+derived_channels: true        # add dV/dt, dT/dt, Q_cum → C becomes 7
+
+# Windowing
+window_size: 100
+stride: 32
+
+# Input channel subset (null = all 7). [0,1,2,3] = raw I,V,T,dt only (no derived channels).
+input_channels: null
+
+# Outlier clipping applied to every SCALED channel at load time (memmap dataset).
+# dV/dt and dT/dt carry glitches up to |x| ~ 2e4 after robust scaling; they
+# caused loss spikes + NaN divergence in pretrain job 72178. null disables.
+clip_value: 10.0
+
+# Phase segmentation
+phase_eps: 0.05               # Amperes — abs(I) below this is "rest"
+phase_min_run: 10             # samples — hysteresis filter min run length
+
+# Splits — per-cell random 80/20 at cycle level (each cycle is atomic; both
+# charge and discharge of a cycle land in the same split, so L_refl pairing works).
+splits:
+  # per_cell_random | cross_battery | cross_temperature | cross_cycle  (CLAUDE.md §10)
+  strategy: per_cell_random
+  train_fraction: 0.80          # per_cell_random only (fixed at prepare_data time)
+  random_seed: 42
+  # cross_battery: whole cells held out — one per operating temperature by default
+  test_batteries: ["cell7-25", "cell11-35", "cell19-45"]
+  holdout_k: 2                  # used only if test_batteries is null
+  # cross_temperature: hold out every cell at this temperature (cell names end in -25/-35/-45)
+  holdout_temperature: 25
+  # cross_cycle: first 70 % of each cell's cycles train, the later (aged) 30 % test
+  cycle_split_frac: 0.7
+  # legacy fields
+  train_batteries: null
+  val_batteries: null
+
+# Pair sampling (for L_refl during pretrain)
+# soc_proxy is the published recipe; boundary_symmetric (position-symmetric pairs)
+# reproduces the v2/v3 runs and is shown in the paper to yield no cross-phase alignment.
+pair_strategy: soc_proxy             # soc_proxy | boundary_symmetric
+
+# DataLoader
+num_workers: 4
+pin_memory: true
+persistent_workers: true

@@ -1,0 +1,9 @@
+# Supervised Hybrid baseline — the SAME encoder ReBoot uses (configs/model/encoder_hybrid.yaml),
+# trained end-to-end on SOC with no SSL pretrain. Isolates the value of the pretrain stage.
+encoder_type: hybrid
+in_channels: ???
+hidden: 128
+encoder_kwargs:
+  nhead: 4
+  num_transformer_layers: 2
+  ffn_dim: 256

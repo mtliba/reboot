@@ -1,0 +1,4 @@
+# SSL-SimCLR baseline: pretrain with augmented-pair InfoNCE, then finetune.
+temperature: 0.1
+crop_min: 0.6
+mask_ratio: 0.20

@@ -1,0 +1,20 @@
+\begin{table}[t]
+\centering
+\caption{Published SOC architectures re-implemented from their papers and trained on our data with the same windows, splits, loss and epochs as every other model (inputs $I$, $V$, $T$ only, as in the originals). Test MAE / RMSE in \% SOC, per-cell random split.}
+\label{tab:lit_reimpl}
+\begin{tabular}{lrrrr}
+\toprule
+Architecture & \multicolumn{2}{c}{100\% labels} & \multicolumn{2}{c}{1\% labels} \\
+ & MAE & RMSE & MAE & RMSE \\
+\midrule
+DNN, Chemali et al.~\cite{chemali2018dnn} & 1.396 & 3.173 & 2.488 & 4.792 \\
+LSTM-RNN, Chemali et al.~\cite{chemali2018lstm} & 1.593 & 3.334 & 2.278 & 4.237 \\
+GRU-RNN, Yang et al.~\cite{yang2019gru} & 1.226 & 2.867 & 2.178 & 4.183 \\
+Transformer, Hannan et al.~\cite{hannan2021transformer} & 1.219 & 2.662 & 1.781 & 3.647 \\
+CNN-Bi-LSTM-AM, Li et al.~\cite{li2026cnnbilstm} & 0.825 & 2.458 & 1.743 & 3.611 \\
+\midrule
+Supervised Hybrid (ours, from scratch) & 0.349 & 0.986 & 1.084 & 2.341 \\
+ReBoot v4 (ours, pretrained) & 0.434 & 1.023 & 0.773 & 1.613 \\
+\bottomrule
+\end{tabular}
+\end{table}

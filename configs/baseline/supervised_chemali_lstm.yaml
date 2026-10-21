@@ -1,0 +1,7 @@
+# Chemali et al. 2018 (IEEE TIE 65(8)): single LSTM layer, 500 units, on [V, I, T].
+encoder_type: chemali_lstm
+in_channels: ???
+hidden: 500
+encoder_kwargs:
+  hidden: 500
+  num_layers: 1

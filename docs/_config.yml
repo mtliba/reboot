@@ -1,0 +1,8 @@
+title: ReBoot
+description: Physics-structured self-supervised pretraining for label-efficient battery state-of-charge estimation
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+plugins: []
+exclude: []

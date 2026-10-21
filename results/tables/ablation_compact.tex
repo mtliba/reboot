@@ -1,0 +1,20 @@
+\begin{table}[t]
+\centering
+\caption{Ablation (test MAE, \% SOC; 100-epoch pretrains unless stated, per-cell random split).}
+\label{tab:abl}
+\footnotesize
+\begin{tabular}{lrr}
+\toprule
+Variant & 100\% labels & 1\% labels \\
+\midrule
+\textit{Full model, 100 ep.} & 0.438 & 0.781 \\
+\quad $-\,\Lrefl$ & 0.444 & 0.921 \\
+\quad $-\,\Lord$ & 0.436 & 0.798 \\
+\quad $-\,\Lphys$ (finetune) & 0.414 & 0.817 \\
+\quad single latent $[\zs;\zd]\to\mathbf{z}$ & 0.450 & 0.758 \\
+\quad $\Lmask$ only (generic MAE) & 0.425 & 0.864 \\
+\quad SimCLR-style contrastive & 0.424 & 0.922 \\
+\textit{Full model, 200 ep.\ (v4)} & 0.434 & 0.773 \\
+\bottomrule
+\end{tabular}
+\end{table}

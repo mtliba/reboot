@@ -1,0 +1,8 @@
+# Supervised LSTM baseline.
+encoder_type: lstm
+in_channels: ???
+hidden: 128
+encoder_kwargs:
+  num_layers: 2
+  dropout: 0.1
+  bidirectional: true

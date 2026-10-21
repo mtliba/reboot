@@ -1,0 +1,16 @@
+# Default encoder: TCN frontend + Transformer backend.
+encoder_type: hybrid
+
+# Dimensions
+in_channels: ???              # filled at runtime from data spec (4 raw or 7 with derived)
+hidden: 128
+d_s: 64
+d_d: 64
+
+# Hybrid encoder hyperparams
+nhead: 4
+num_transformer_layers: 2
+ffn_dim: 256
+
+# Ablation flag
+single_latent: false          # if true, [z_s; z_d] becomes one z of size d_s + d_d

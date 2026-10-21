@@ -1,0 +1,12 @@
+encoder_type: tcn
+
+in_channels: ???
+hidden: 128
+d_s: 64
+d_d: 64
+
+# TCN hyperparams
+kernel_size: 3
+dilations: [1, 2, 4, 8]
+
+single_latent: false

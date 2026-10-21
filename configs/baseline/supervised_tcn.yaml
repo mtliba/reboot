@@ -1,0 +1,6 @@
+encoder_type: tcn
+in_channels: ???
+hidden: 128
+encoder_kwargs:
+  kernel_size: 3
+  dilations: [1, 2, 4, 8]

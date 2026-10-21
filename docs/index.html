@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ReBoot — Physics-Structured Self-Supervised Pretraining for Label-Efficient Battery SOC Estimation</title>
+<meta name="description" content="ReBoot: physics-structured self-supervised pretraining for label-efficient battery state-of-charge estimation. ICASSP 2026 submission. Code, results and supporting evidence.">
+<meta property="og:title" content="ReBoot — Physics-Structured Self-Supervised Pretraining for Battery SOC Estimation">
+<meta property="og:description" content="−28% MAE at 1% labels on 19 LFP cells. Code, 145 evaluation runs, and latent-space evidence that cross-phase alignment is what fires.">
+<meta property="og:image" content="https://mtliba.github.io/reboot/static/figures/fig2_overview.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔋</text></svg>">
+<link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="venue">Submitted to ICASSP 2026</div>
+    <h1>Physics-Structured Self-Supervised Pretraining for Label-Efficient Battery State-of-Charge Estimation</h1>
+    <p class="sub"><b>ReBoot</b> — learning SOC structure from unlabelled battery cycling logs</p>
+    <p class="authors">
+      Marouane Tliba<sup>1,*</sup> ·
+      Slimane Arbaoui<sup>2,*</sup> ·
+      Youssra Taifour<sup>1</sup> ·
+      Mohamed Amine Kerkouri<sup>1,3</sup> ·
+      Marwa Zitouni<sup>2</sup> ·
+      Nour Aburaed<sup>4</sup> ·
+      Azeddine Beghdadi<sup>1</sup> ·
+      Aladine Chetouani<sup>1</sup> ·
+      Tedjani Mesbahi<sup>2</sup>
+    </p>
+    <p class="affil"><sup>1</sup> Université Sorbonne Paris Nord &nbsp;·&nbsp;
+      <sup>2</sup> INSA Strasbourg &nbsp;·&nbsp;
+      <sup>3</sup> F-Initiative, ICUBE &nbsp;·&nbsp;
+      <sup>4</sup> University of Dubai</p>
+    <p class="eq">* equal contribution</p>
+    <div class="btns">
+      <a class="btn primary" href="https://github.com/mtliba/reboot">Code</a>
+      <a class="btn" href="EVIDENCE.html">Supporting evidence</a>
+      <a class="btn" href="RESULTS.html">All results</a>
+      <a class="btn" href="REPRODUCE.html">Reproduce</a>
+      <a class="btn" href="#bibtex">BibTeX</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<h2>Abstract</h2>
+<p>Accurate state-of-charge (SOC) estimation is essential for battery management, but data-driven
+models typically require densely labelled SOC trajectories that are difficult to obtain outside
+controlled laboratory conditions. We propose <b>ReBoot</b>, a physics-structured self-supervised
+pretraining framework for label-efficient SOC estimation from multivariate battery time series.
+ReBoot exploits two forms of label-free structure: monotonic SOC progression within charge and
+discharge segments, and cross-phase correspondence between windows at similar charge states despite
+hysteresis and phase-dependent dynamics. Pretraining combines an ordinal progression objective,
+cross-phase representation alignment, and masked signal reconstruction. Cross-phase pairs are
+constructed from a Coulomb-derived state coordinate used only during pretraining. On 19 cells
+spanning three temperatures and 2.9&nbsp;M windows, ReBoot reduces test MAE by 28&nbsp;% with 1&nbsp;%
+labelled data and 11&nbsp;% with 5&nbsp;%, relative to the identical encoder trained from scratch. Using
+only raw <i>I</i>,&nbsp;<i>V</i>,&nbsp;<i>T</i>,&nbsp;Δ<i>t</i> inputs, pretraining improves the same
+encoder across all label fractions by 12–23&nbsp;%. Ablations identify cross-phase alignment as the
+dominant structured objective in the low-label regime.</p>
+
+<div class="stats">
+  <div class="stat"><div class="n">−28 %</div><div class="l">MAE at 1 % labels<br>vs. same encoder from scratch</div></div>
+  <div class="stat"><div class="n">12–23 %</div><div class="l">gain at <i>every</i> label fraction<br>with raw inputs only</div></div>
+  <div class="stat"><div class="n">0.016</div><div class="l">cross-phase retrieval gap in SOC<br>(0.327 at chance)</div></div>
+  <div class="stat"><div class="n">2.88 M</div><div class="l">windows · 39 634 cycles<br>19 LFP cells, 3 temperatures</div></div>
+</div>
+
+<figure>
+  <img src="static/figures/fig2_overview.png" alt="Overview of the ReBoot framework">
+  <figcaption><b>Overview of ReBoot.</b> Pretraining combines masked reconstruction, within-phase
+  ordinal progression, and cross-phase alignment at similar Coulomb-derived states, with near-state
+  negative masking and auxiliary regularization. The pretrained representation is then fine-tuned
+  for SOC estimation using limited labels and a weak charge-consistency constraint.</figcaption>
+</figure>
+
+<hr>
+
+<h2>Why SOC is hard, and what is free</h2>
+<p class="lede">The supervision is expensive; the structure is not.</p>
+
+<p>Reference SOC cannot be measured directly — it is obtained by Coulomb-counting a carefully
+instrumented cell, which is why densely labelled trajectories exist only for cells someone has
+already paid to characterise. Current, voltage and temperature logs, by contrast, accumulate for
+free on every cell that is ever cycled. The question is what can be learned from the logs alone.</p>
+
+<figure>
+  <img src="static/figures/fig1_motivation.png" alt="Challenges in SOC estimation">
+  <figcaption><b>Challenges in SOC estimation.</b> (a) Charge–discharge hysteresis causes different
+  voltages at the same SOC — 211&nbsp;mV on these cells. (b) Voltage–SOC characteristics vary across
+  cells and temperatures. (c) SOC must be inferred from measured current, voltage, temperature and
+  their temporal evolution.</figcaption>
+</figure>
+
+<p>ReBoot's answer is that a battery trajectory carries two label-free constraints that no generic
+time-series pretext task encodes:</p>
+
+<div class="cards">
+  <div class="card">
+    <span class="tag">L_ord</span>
+    <h4>SOC is monotone inside a phase</h4>
+    <p>Within one continuous charge or discharge segment, SOC can only move one way. A margin
+    ranking loss on a scalar read-out of the shared latent turns that into supervision, with no
+    label and no assumed rate.</p>
+  </div>
+  <div class="card">
+    <span class="tag">L_refl</span>
+    <h4>The two phases visit the same states</h4>
+    <p>A charging cell and a discharging cell pass through the same charge states by different
+    routes. Aligning those states across phases is what forces the representation to encode SOC
+    rather than the operating mode — <i>if</i> you can tell which windows correspond.</p>
+  </div>
+  <div class="card">
+    <span class="tag">L_phys</span>
+    <h4>Charge is conserved</h4>
+    <p>Between consecutive windows, the predicted SOC change should match what the measured current
+    moved, up to a Coulombic efficiency and a cell capacity. Both are left learnable, and both
+    converge to physically plausible values.</p>
+  </div>
+</div>
+
+<hr>
+
+<h2>Results</h2>
+<p class="lede">The benefit is concentrated exactly where labels are scarce.</p>
+
+<figure>
+  <img src="static/figures/fig3_label_efficiency.png" alt="Label efficiency and input control">
+  <figcaption><b>Label efficiency and input control.</b> (a) With 7-channel inputs, the final
+  200-epoch ReBoot model gives its largest improvement under scarce supervision, with the crossover
+  relative to training from scratch between 10&nbsp;% and 25&nbsp;% labels. (b) With raw
+  <i>I</i>,&nbsp;<i>V</i>,&nbsp;<i>T</i>,&nbsp;Δ<i>t</i> inputs, 100-epoch ReBoot improves the same
+  encoder at every label fraction.</figcaption>
+</figure>
+
+<div class="tablewrap">
+<table>
+<thead><tr><th>Model</th><th>100 %</th><th>25 %</th><th>10 %</th><th>5 %</th><th>1 %</th></tr></thead>
+<tbody>
+<tr class="group"><td colspan="6">Supervised, from scratch</td></tr>
+<tr><td>TCN</td><td>0.369</td><td>0.513</td><td>0.658</td><td>0.810</td><td>1.208</td></tr>
+<tr><td>Hybrid (ReBoot encoder)</td><td class="best">0.363</td><td class="best">0.477</td><td>0.581</td><td>0.692</td><td>1.076</td></tr>
+<tr class="group"><td colspan="6">Published SOC architectures, re-implemented</td></tr>
+<tr><td>DNN</td><td>1.396</td><td>1.933</td><td>2.095</td><td>2.244</td><td>2.488</td></tr>
+<tr><td>LSTM-RNN</td><td>1.593</td><td>1.734</td><td>1.859</td><td>1.975</td><td>2.278</td></tr>
+<tr><td>GRU-RNN</td><td>1.226</td><td>1.442</td><td>1.745</td><td>1.852</td><td>2.178</td></tr>
+<tr><td>Transformer</td><td>1.219</td><td>1.242</td><td>1.298</td><td>1.444</td><td>1.781</td></tr>
+<tr><td>CNN-Bi-LSTM-AM</td><td>0.825</td><td>1.082</td><td>1.281</td><td>1.483</td><td>1.743</td></tr>
+<tr class="group"><td colspan="6">Self-supervised baselines, same encoder (100 ep.)</td></tr>
+<tr><td>Masked reconstruction</td><td>0.425</td><td>0.527</td><td>0.602</td><td>0.670</td><td>0.864</td></tr>
+<tr><td>SimCLR-style contrastive</td><td>0.424</td><td>0.531</td><td>0.601</td><td>0.669</td><td>0.922</td></tr>
+<tr class="group"><td colspan="6">ReBoot</td></tr>
+<tr><td>Position-based pairing</td><td>0.393</td><td>0.478</td><td class="best">0.536</td><td class="best">0.600</td><td>0.813</td></tr>
+<tr class="hi"><td>Coulomb pairing + mask (200 ep.)</td><td>0.436</td><td>0.519</td><td>0.562</td><td>0.614</td><td class="best">0.773</td></tr>
+<tr class="group"><td colspan="6">Raw I, V, T, Δt only</td></tr>
+<tr><td>Hybrid, from scratch</td><td>1.141</td><td>1.068</td><td>1.139</td><td>1.275</td><td>1.713</td></tr>
+<tr class="hi"><td>ReBoot (100 ep.)</td><td>0.890</td><td>0.943</td><td>1.008</td><td>1.074</td><td>1.313</td></tr>
+</tbody>
+</table>
+</div>
+<p style="color:var(--muted);font-size:13.5px">Test MAE in percentage points of SOC. Input sets
+differ across groups; bold marks the best result within the matched 7-channel comparison. The full
+set of 145 evaluation runs, with RMSE, P95/P99, R² and per-phase, per-temperature, per-cell and
+per-decile breakdowns, is on the <a href="RESULTS.html">results page</a>.</p>
+
+<h3>Ablation</h3>
+<div class="tablewrap">
+<table>
+<thead><tr><th>Variant (100-epoch pretraining)</th><th>100 %</th><th>1 %</th></tr></thead>
+<tbody>
+<tr><td>Full ReBoot</td><td>0.438</td><td>0.781</td></tr>
+<tr class="hi"><td>− cross-phase alignment (<code>L_refl</code>)</td><td>0.444</td><td>0.921</td></tr>
+<tr><td>− ordinal progression (<code>L_ord</code>)</td><td>0.436</td><td>0.798</td></tr>
+<tr><td>− charge consistency (<code>L_phys</code>)</td><td>0.414</td><td>0.817</td></tr>
+<tr><td>Single latent</td><td>0.450</td><td>0.758</td></tr>
+<tr><td>Masked reconstruction only</td><td>0.425</td><td>0.864</td></tr>
+<tr><td>SimCLR-style</td><td>0.424</td><td>0.922</td></tr>
+<tr><td>Full ReBoot, 200 ep.</td><td>0.434</td><td>0.773</td></tr>
+</tbody>
+</table>
+</div>
+<p>Removing cross-phase alignment is by far the most damaging single change at 1&nbsp;% labels
+(+18&nbsp;%), and neither generic self-supervised objective accounts for the gain under a matched
+budget.</p>
+
+<hr>
+
+<h2>Does the claimed mechanism actually fire?</h2>
+<p class="lede">The accuracy table cannot distinguish "contrastive pretraining is a good
+regulariser" from "cross-phase alignment is being learned". The latent space can.</p>
+
+<figure>
+  <img src="static/figures/evidence_alignment.png" alt="Alignment evidence">
+  <figcaption><b>(a)</b> Scored against reference SOC, the positives produced by the
+  position-symmetric construction sit 0.279 SOC apart (11&nbsp;% within 0.05); Coulomb-derived
+  pairing gives 0.009 (97&nbsp;%), beating even a label-using oracle restricted to the same cycle.
+  <b>(b)</b> In the pretrained latent, the nearest cross-phase neighbour of a charge window is
+  0.016 SOC away, against 0.327 at chance; with position pairing the same measurement gives 0.226,
+  i.e. no alignment at all. <b>(c)</b> SOC information moves into the shared half exactly as the
+  factorisation intends. Reference SOC is used only to <i>measure</i> — never to pair, mask or
+  train.</figcaption>
+</figure>
+
+<div class="note">
+<b>Why this matters.</b> The position-symmetric construction — pair the charge window at relative
+position <i>p</i> with the discharge window at 1&nbsp;−&nbsp;<i>p</i> — is the natural reading of
+"charging run in reverse", and it is what the method was first written with. On real cells it is
+wrong by 0.279 SOC, because multi-step fast charging makes charge segments two to three times
+longer than the WLTC discharge segments they are matched against. The loss still converges; it
+simply learns nothing. Getting the pair construction physically right is the paper's central
+methodological point, and it is measurable before any downstream fine-tuning.
+</div>
+
+<figure>
+  <img src="static/figures/evidence_factorisation.png" alt="Latent factorisation">
+  <figcaption><b>The factorisation behaves as specified.</b> Two-dimensional PCA of each half of the
+  latent. <code>z_s</code> orders SOC monotonically <i>and</i> places charge and discharge windows
+  on the same arms of the manifold — what <code>L_ord</code> and <code>L_refl</code> ask for.
+  <code>z_d</code>, which no alignment term touches, is where the phase separates.</figcaption>
+</figure>
+
+<figure>
+  <img src="static/figures/evidence_physics.png" alt="Learned physics parameters">
+  <figcaption><b>The physics term recovers plausible constants.</b> The learnable Coulombic
+  efficiency settles at 0.945, in the middle of its admissible band, from both the 100&nbsp;% and
+  the 1&nbsp;% label runs; the learned per-cell capacities land 6–18&nbsp;% below nameplate,
+  consistently across all 19 cells — the expected signature of cycled cells measured under a WLTC
+  load. These are free parameters that could have drifted anywhere in range.</figcaption>
+</figure>
+
+<figure>
+  <img src="static/figures/evidence_scaling.png" alt="Scaling and sensitivity">
+  <figcaption><b>The gain scales with unlabelled data, and the recipe is not knife-edge.</b>
+  (a) Shrinking the unlabelled pool raises 1&nbsp;%-label MAE from 0.781 to 0.899 while barely
+  moving the 100&nbsp;%-label number — the signature of a pretraining effect. (b) Both tuned weights
+  sit on flat parts of their curves; the published λ<sub>refl</sub>&nbsp;=&nbsp;0.5 is not even the
+  best point in its sweep, so the reported improvement is not a best-of-sweep number.</figcaption>
+</figure>
+
+<p><a href="EVIDENCE.html">Full supporting-evidence page →</a></p>
+
+<hr>
+
+<h2>Qualitative</h2>
+<figure>
+  <img src="static/figures/extra_traces.png" alt="Predicted versus reference SOC traces">
+  <figcaption>Predicted and reference SOC over held-out cycles at 1&nbsp;% labelled data.</figcaption>
+</figure>
+<figure>
+  <img src="static/figures/extra_mae_by_soc.png" alt="Error by SOC decile">
+  <figcaption>Error structure across the SOC range. The low-label advantage is broad rather than
+  concentrated in one region of the operating envelope.</figcaption>
+</figure>
+
+<hr>
+
+<h2>What this does not claim</h2>
+<ul>
+<li><b>It is not a full-supervision result.</b> The crossover against training from scratch lies
+between 10&nbsp;% and 25&nbsp;% labels; above it, the supervised control wins.</li>
+<li><b>It is not domain adaptation.</b> Under cross-cell and later-life shift, ReBoot sits within
+±2&nbsp;% of the supervised control. Label efficiency and distribution shift are different
+problems.</li>
+<li><b>The factorisation is not the source of the accuracy.</b> A single-latent variant matches it
+at 1&nbsp;% labels. The split is the coordinate system the objectives are defined on, and the
+latent-space evidence shows it behaves as designed — but the paper does not credit it with the
+gain.</li>
+<li><b>Verified alignment did not translate monotonically downstream.</b> The Coulomb-paired model
+has a 20× better retrieval gap than the position-paired one, yet wins only at 1&nbsp;% labels. Both
+rows are reported.</li>
+</ul>
+
+<hr>
+
+<h2>Reproducing</h2>
+<p>The committed Hydra defaults <i>are</i> the published recipe; the overrides below are only what
+differs from them.</p>
+
+<pre><code>git clone https://github.com/mtliba/reboot.git &amp;&amp; cd reboot
+uv venv &amp;&amp; uv pip install -e ".[dev]"
+pytest -q                       # one test per loss, CPU-only, no data needed
+
+# Stage 1 — pretraining, no labels (~9 h on 2x A100)
+python scripts/pretrain.py trainer.max_epochs=200 trainer.precision=32 \
+    pretrain.batch_size=2048 pretrain.batch_sampler=cycle \
+    data.pair_strategy=soc_proxy pretrain.refl_neg_mask_eps=0.05
+
+# Stage 2 — fine-tune on 1 % of the labels, then evaluate
+python scripts/finetune.py "finetune.pretrained_ckpt='&lt;ckpt&gt;'" finetune.label_fraction=0.01
+python scripts/evaluate.py "+eval.ckpt='&lt;ckpt&gt;'" +eval.protocol=per_cell_random
+
+# Rebuild every figure on this page from the committed artefacts
+python scripts/make_evidence_figures.py</code></pre>
+
+<p>The repository ships the per-run evaluation metrics behind every table, the learned physics
+parameters, and 12&nbsp;k held-out windows embedded by each pretrained encoder, so the latent-space
+analysis above can be recomputed without a GPU. The battery measurements themselves belong to the
+dataset authors and are not redistributed; a synthetic generator with the same schema lets the whole
+pipeline and all tests run without them. See the
+<a href="REPRODUCE.html">reproduction guide</a>.</p>
+
+<h2 id="bibtex">BibTeX</h2>
+<pre><code>@inproceedings{tliba2026reboot,
+  title     = {Physics-Structured Self-Supervised Pretraining for
+               Label-Efficient Battery State-of-Charge Estimation},
+  author    = {Tliba, Marouane and Arbaoui, Slimane and Taifour, Youssra and
+               Kerkouri, Mohamed Amine and Zitouni, Marwa and Aburaed, Nour and
+               Beghdadi, Azeddine and Chetouani, Aladine and Mesbahi, Tedjani},
+  booktitle = {IEEE International Conference on Acoustics, Speech and
+               Signal Processing (ICASSP)},
+  year      = {2026}
+}</code></pre>
+
+<p style="color:var(--muted);font-size:13.5px">The cells are the LFP cycling campaign of
+Arbaoui&nbsp;et&nbsp;al., <i>Spiking neural networks for accurate and efficient state of health
+estimation of lithium-ion batteries across varying temperatures</i>, IEEE Open Journal of Vehicular
+Technology 7:510–522, 2026. Parts of the overview figure were visually refined from an
+author-designed scientific schematic; the scientific content and final verification are the
+authors'.</p>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    Code released under the MIT License ·
+    <a href="https://github.com/mtliba/reboot">github.com/mtliba/reboot</a>
+  </div>
+</footer>
+
+</body>
+</html>

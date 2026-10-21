@@ -1,0 +1,30 @@
+# Stage 2 finetune — see CLAUDE.md §6.6, §8.2.
+mode: full_finetune           # linear_probe | full_finetune
+max_epochs: 50                # finetune epochs (overrides trainer.max_epochs inside scripts/finetune.py)
+
+# Fraction of TRAIN cycles held out as a validation set for checkpoint selection
+# (monitor val/mae). The 20 % TEST split is only used by scripts/evaluate.py.
+# Set to 0 to fall back to validating on the test split (legacy behaviour).
+val_fraction: 0.10
+
+batch_size: 128
+lr_head: 1.0e-3
+lr_encoder: 1.0e-4
+weight_decay: 1.0e-4
+
+huber_delta: 0.05
+
+# Fraction of TRAIN windows used during finetune. Useful for the `low_label`
+# evaluation protocol (CLAUDE.md §10) — set to e.g. 0.01 / 0.05 / 0.10 / 0.25
+# to see how SSL pretrain helps in low-label regimes.
+label_fraction: 1.0
+label_fraction_seed: 0       # reproducible random subset
+
+loss_weights:
+  phys: 0.01
+
+losses:
+  use_phys: true
+
+# Path to pretrained checkpoint
+pretrained_ckpt: null

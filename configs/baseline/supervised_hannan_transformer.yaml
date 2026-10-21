@@ -1,0 +1,11 @@
+# Hannan et al. 2021 (Sci. Rep. 11): transformer encoder d=128, 16 heads, learned pos. enc., dropout 0.2/0.1.
+encoder_type: hannan_transformer
+in_channels: ???
+hidden: 128
+encoder_kwargs:
+  d_model: 128
+  nhead: 16
+  num_layers: 4
+  ffn_dim: 256
+  dropout_ffn: 0.2
+  dropout_res: 0.1

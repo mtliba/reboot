@@ -1,0 +1,14 @@
+encoder_type: transformer
+
+in_channels: ???
+hidden: 128
+d_s: 64
+d_d: 64
+
+# Transformer hyperparams
+nhead: 4
+num_layers: 4
+ffn_dim: 256
+max_len: 512
+
+single_latent: false

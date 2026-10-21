@@ -1,0 +1,13 @@
+# Lightning Trainer args.
+max_epochs: 200               # pretrain default; finetune script overrides to 50
+accelerator: auto
+devices: 1                   # override to N for multi-GPU; combine with strategy below
+strategy: null               # null | ddp | ddp_find_unused_parameters_true
+precision: bf16-mixed
+gradient_clip_val: 1.0
+log_every_n_steps: 20
+deterministic: false          # bf16-mixed + deterministic can be slow; flip on for repro runs
+check_val_every_n_epoch: 1
+# Smoke-test knobs (null = full data). e.g. trainer.limit_train_batches=3
+limit_train_batches: null
+limit_val_batches: null

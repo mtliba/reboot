@@ -1,0 +1,24 @@
+# Root Hydra config. Compose by overriding individual groups from the CLI:
+#   python scripts/pretrain.py model=encoder_tcn pretrain.lr=5e-4
+
+defaults:
+  - data: default
+  - model: encoder_hybrid
+  - pretrain: default
+  - finetune: default
+  - trainer: default
+  - synth: default
+  - _self_
+
+seed: 42
+
+paths:
+  output_dir: outputs
+  checkpoint_dir: outputs/checkpoints
+  scaler_path: outputs/scalers.pkl
+
+wandb:
+  project: reboot
+  entity: null
+  mode: online   # offline | online | disabled
+  tags: []

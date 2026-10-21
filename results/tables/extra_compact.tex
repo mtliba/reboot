@@ -1,0 +1,17 @@
+\begin{table}[t]
+\centering
+\caption{Shift protocols and controls (test MAE, \% SOC). Cross-battery: three whole cells held out and excluded from pretraining; cross-cycle: aged last 30\,\% of every cell's cycles. Equal steps: 500 finetuning epochs at 1\,\% of labels. Linear probe: frozen pretrained encoder.}
+\label{tab:extra}
+\footnotesize
+\begin{tabular}{llrr}
+\toprule
+Setting & Labels & Sup.\ Hybrid & ReBoot v4 \\
+\midrule
+Cross-battery & 100\% & 1.022 & 0.998 \\
+Cross-battery & 1\% & 1.131 & 1.052 \\
+Cross-cycle (ageing) & 100\% & 5.454 & 5.532 \\
+Equal steps (500 ep.) & 1\% & 0.876 & 0.673 \\
+Linear probe, frozen encoder & 1\% / 100\% & -- & 1.199 / 0.850 \\
+\bottomrule
+\end{tabular}
+\end{table}

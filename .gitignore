@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.DS_Store
+.ipynb_checkpoints/
+
+# local run artefacts — the committed results/ directory holds what the paper uses
+/outputs/
+/data/
+/wandb/
+/lightning_logs/
+*.ckpt
+*.log

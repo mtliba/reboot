@@ -1,0 +1,32 @@
+\begin{table*}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Flagship comparison: test MAE (\% SOC) on the in-distribution split (574\,944 held-out windows of all 19 cells) versus the fraction of labelled training windows. All models share the same windows, splits, loss (Huber), fine-tuning epochs (50) and label subsets; entries are averaged over seeds where repeated (count in parentheses). \textbf{Input sets differ between groups, which are therefore not interchangeable:} the first, third and fourth groups receive the 7 channels of Section~\ref{sec:setup}, the published architectures receive $I$, $V$, $T$ as in their papers, and the last group receives raw $I$, $V$, $T$, $\Delta t$ only. Bold marks the best value per column \textbf{within the 7-channel groups}, where ReBoot and the supervised hybrid share the identical encoder and the comparison is input-matched. The generic-SSL rows use 100-epoch pretraining; ReBoot at 100 epochs, which is the epoch-matched comparison, gives 0.438 and 0.781 at 100\,\% and 1\,\% of labels.}
+\label{tab:flagship}
+\begin{tabular}{lrrrrr}
+\toprule
+Model & 100\% labels & 25\% labels & 10\% labels & 5\% labels & 1\% labels \\
+\midrule
+\multicolumn{6}{l}{\textit{Supervised, from scratch}} \\
+\quad TCN~\cite{bai2018tcn} & 0.369 & 0.513 & 0.658 & 0.810 & 1.208 \\
+\quad Hybrid (ReBoot encoder) & \textbf{0.363 (3)} & \textbf{0.477 (3)} & 0.581 (3) & 0.692 (3) & 1.076 (3) \\
+\multicolumn{6}{l}{\textit{Published SOC architectures, re-implemented}} \\
+\quad DNN~\cite{chemali2018dnn} & 1.396 & 1.933 & 2.095 & 2.244 & 2.488 \\
+\quad LSTM-RNN~\cite{chemali2018lstm} & 1.593 & 1.734 & 1.859 & 1.975 & 2.278 \\
+\quad GRU-RNN~\cite{yang2019gru} & 1.226 & 1.442 & 1.745 & 1.852 & 2.178 \\
+\quad Transformer~\cite{hannan2021transformer} & 1.219 & 1.242 & 1.298 & 1.444 & 1.781 \\
+\quad CNN-Bi-LSTM-AM~\cite{li2026cnnbilstm} & 0.825 & 1.082 & 1.281 & 1.483 & 1.743 \\
+\multicolumn{6}{l}{\textit{Generic SSL pretraining, same encoder}} \\
+\quad Masked reconstruction (MAE)~\cite{he2022mae} & 0.425 & 0.527 & 0.602 & 0.670 & 0.864 \\
+\quad SimCLR-style contrastive~\cite{chen2020simclr} & 0.424 & 0.531 & 0.601 & 0.669 & 0.922 \\
+\multicolumn{6}{l}{\textit{ReBoot (ours)}} \\
+\quad ReBoot, position-symmetric pairs & 0.393 & 0.478 & \textbf{0.536} & \textbf{0.600} & 0.813 \\
+\quad ReBoot, pseudo-SOC pairs + mask & 0.436 (2) & 0.519 (3) & 0.562 (3) & 0.614 (3) & \textbf{0.773 (3)} \\
+\midrule
+\multicolumn{6}{l}{\textit{Raw $I,V,T,\Delta t$ inputs only (no derived channels)}} \\
+\quad Hybrid, from scratch & 1.141 & 1.068 & 1.139 & 1.275 & 1.713 \\
+\quad ReBoot (100 ep.) & 0.890 & 0.943 & 1.008 & 1.074 & 1.313 \\
+\bottomrule
+\end{tabular}
+\end{table*}

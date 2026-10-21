@@ -1,0 +1,8 @@
+encoder_type: transformer
+in_channels: ???
+hidden: 128
+encoder_kwargs:
+  nhead: 4
+  num_layers: 4
+  ffn_dim: 256
+  max_len: 512

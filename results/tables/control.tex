@@ -1,0 +1,15 @@
+\begin{table}[t]
+\centering
+\caption{Training-budget control at 1\,\% of labels (per-cell random split). 500 finetuning epochs at 1\,\% of labels equal the number of gradient steps of 50 epochs at 10\,\%.}
+\label{tab:control}
+\begin{tabular}{lrrr}
+\toprule
+Model & Epochs & MAE & RMSE \\
+\midrule
+Supervised Hybrid & 50 & 1.084 & 2.341 \\
+Supervised Hybrid & 500 & 0.876 & 1.841 \\
+ReBoot v4 & 50 & 0.773 & 1.613 \\
+ReBoot v4 & 500 & 0.673 & 1.487 \\
+\bottomrule
+\end{tabular}
+\end{table}
